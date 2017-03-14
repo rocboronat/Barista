@@ -2,6 +2,7 @@ package com.schibsted.spain.barista.sample;
 
 import android.support.test.rule.ActivityTestRule;
 import com.schibsted.spain.barista.BaristaClickActions;
+import com.schibsted.spain.barista.cleardata.ClearDatabaseRule;
 import com.schibsted.spain.barista.cleardata.ClearPreferencesRule;
 import org.junit.Rule;
 import org.junit.Test;
@@ -12,6 +13,9 @@ public class ClearDatabaseRuleTest {
 
   @Rule
   public ActivityTestRule<DatabaseActivity> activityRule = new ActivityTestRule<>(DatabaseActivity.class, true, false);
+
+  @Rule
+  public ClearDatabaseRule clearDatabaseRule = new ClearDatabaseRule();
 
   //
   // Only one of these two tests will succeed when database is not cleared.
