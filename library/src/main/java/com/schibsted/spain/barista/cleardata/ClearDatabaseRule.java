@@ -5,8 +5,8 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteException;
 import android.support.test.InstrumentationRegistry;
+import java.io.File;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 import org.junit.rules.TestRule;
 import org.junit.runner.Description;
@@ -30,24 +30,26 @@ public class ClearDatabaseRule implements TestRule {
   }
 
   private void clearData() {
-    for (String dbName : getDatabaseNames()) {
-      Context context = InstrumentationRegistry.getTargetContext();
-      SQLiteDatabase database = context.openOrCreateDatabase(dbName, Context.MODE_PRIVATE, null);
-      for (String table : getTableNames(dbName)) {
+    for (File dbFile : getDatabaseFiles()) {
+      SQLiteDatabase database = performOpen(dbFile, 0);
+      for (String table : getTableNames(dbFile)) {
         database.delete(table, null, null);
       }
       database.close();
     }
   }
 
-  private List<String> getDatabaseNames() {
+  private List<File> getDatabaseFiles() {
     Context context = InstrumentationRegistry.getTargetContext();
-    return Arrays.asList(context.databaseList());
+    List<File> databaseFiles = new ArrayList<>();
+    for (String databaseName : context.databaseList()) {
+      databaseFiles.add(context.getDatabasePath(databaseName));
+    }
+    return databaseFiles;
   }
 
-  private List<String> getTableNames(String databaseName) throws SQLiteException {
-    Context context = InstrumentationRegistry.getTargetContext();
-    SQLiteDatabase database = context.openOrCreateDatabase(databaseName, Context.MODE_PRIVATE, null);
+  private List<String> getTableNames(File databaseFile) throws SQLiteException {
+    SQLiteDatabase database = performOpen(databaseFile, 0);
     try {
       Cursor cursor = database.rawQuery("SELECT name FROM sqlite_master WHERE type IN (?, ?)",
           new String[] { "table", "view" });
@@ -63,5 +65,15 @@ public class ClearDatabaseRule implements TestRule {
     } finally {
       database.close();
     }
+  }
+
+  private SQLiteDatabase performOpen(File databaseFile, int options) {
+    int flags = SQLiteDatabase.OPEN_READWRITE;
+
+    SQLiteDatabase db = SQLiteDatabase.openDatabase(
+        databaseFile.getAbsolutePath(),
+        null /* cursorFactory */,
+        flags);
+    return db;
   }
 }
