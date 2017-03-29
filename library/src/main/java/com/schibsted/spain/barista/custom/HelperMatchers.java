@@ -6,7 +6,7 @@ import org.hamcrest.Matcher;
 
 public class HelperMatchers {
 
-  public static <T> Matcher<T> firstOf(final Matcher<T> matcher) {
+  public static <T> Matcher<T> firstViewOf(final Matcher<T> matcher) {
     return new BaseMatcher<T>() {
       private boolean isFirst = true;
 
