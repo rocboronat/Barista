@@ -16,6 +16,7 @@ import static android.support.test.espresso.matcher.ViewMatchers.isDisplayed;
 import static android.support.test.espresso.matcher.ViewMatchers.isEnabled;
 import static android.support.test.espresso.matcher.ViewMatchers.withId;
 import static android.support.test.espresso.matcher.ViewMatchers.withText;
+import static com.schibsted.spain.barista.custom.HelperMatchers.firstOf;
 import static org.hamcrest.core.IsNot.not;
 import static org.junit.Assert.fail;
 
@@ -34,7 +35,7 @@ public class BaristaAssertions {
   }
 
   public static void assertDisplayed(String text) {
-    onView(withText(text)).check(matches(isDisplayed()));
+    onView(firstOf(withText(text))).check(matches(isDisplayed()));
   }
 
   public static void assertNotExist(int id) {
