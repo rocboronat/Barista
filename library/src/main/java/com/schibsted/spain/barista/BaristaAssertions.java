@@ -36,7 +36,7 @@ public class BaristaAssertions {
   }
 
   public static void assertDisplayed(String text) {
-    onView((firstViewOf(allOf(withText(text), isDisplayed())))).check(matches(isDisplayed()));
+    onView(firstViewOf(allOf(withText(text), isDisplayed()))).check(matches(isDisplayed()));
   }
 
   public static void assertNotExist(int id) {
